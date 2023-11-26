@@ -9,9 +9,9 @@ int main() {
     
     try {
         
-    std::vector<std::vector<double>> real_values, calculated_values;
+    std::vector<std::vector<double>> experimental_values, calculated_values;
     
-    RetriveData(real_values, "Data/Real.txt");
+    RetriveData(experimental_values, "Data/Real.txt");
     RetriveData(calculated_values, "Data/Calculated.txt");
     }
     catch (std::exception& e)
@@ -27,6 +27,9 @@ int main() {
 
     std::cout << calcEquation(a, b, c, x0, y0, left, right, eps) << "\n";
 
+    system("pause");
+
+    return 0;
 
     std::vector<double> X_vec{ 2,6,8,10,11 };
     std::vector<double> Y_vec{ 4,36,64,100,121 };
