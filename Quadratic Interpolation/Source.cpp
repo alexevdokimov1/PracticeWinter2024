@@ -25,6 +25,7 @@ void RetriveData(std::vector<std::vector<double>>& values, std::string filename)
             f >> single[i];
         values.push_back(single);
     }
+    f.close();
     return;
 }
 
