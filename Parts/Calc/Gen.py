@@ -2,14 +2,14 @@ from sympy import Symbol, S
 from sympy.solvers.solveset import solveset, solveset_real
 from random import uniform
 
-f = open("Quadratic Interpolation/Debug/CalcTest.txt", "w")
-positive_gen=3
-negative_gen=3
+f = open("CalcTest.txt", "w")
+positive_gen=5
+negative_gen=5
 
 f.write(str(positive_gen+negative_gen)+"\n")
 
 x = Symbol('x')
-for i in range (3):
+for i in range (positive_gen):
     a=round(uniform(0, 1000),0)
     b=round(uniform(0, 1000),0)
     c=round(uniform(0, 1000),0)
@@ -22,7 +22,7 @@ for i in range (3):
         f.write(" "+str(each))
     f.write("\n")
 
-for i in range (3):
+for i in range (negative_gen):
     a=round(uniform(-1000,0),0)
     b=round(uniform(-1000,0),0)
     c=round(uniform(-1000,0),0)

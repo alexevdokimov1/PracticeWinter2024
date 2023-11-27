@@ -65,16 +65,6 @@ double calcEquation(double a, double b, double c, double x0_param, double y0_par
 double Interpolation(double x, const std::vector<double>& xValues, const std::vector<double>& yValues) {
     int n = xValues.size();
 
-    if (n != yValues.size()) {
-        throw std::exception("Interpolation: Vector don't match\n");
-        return 0.0;
-    }
-
-    if (n < 4) {
-        throw std::exception("Interpolation: Lack of data\n");
-        return 0.0;
-    }
-
     for (int i = 0; i <= n - 4; i++) {
         if (x >= xValues[i+1] && x <= xValues[i + 2]) {
             double x0 = xValues[i];
