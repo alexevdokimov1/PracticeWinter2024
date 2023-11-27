@@ -8,24 +8,26 @@
 // RetriveData - метод
 // принимает ссылку на массив (std::vector<std::vector<double>>) и std::string filename - имя файла
 // обрабатывает файл и возвращает данные из него
-void RetriveData(std::vector<std::vector<double>>& values, std::string filename)
+void RetriveData(std::vector<std::vector<double>>& values, int& line_count, std::string filename)
 {
-    std::ifstream f(filename);
-    if (!f)
+    std::ifstream file(filename);
+    if (!file)
     {
         throw std::exception(("Retriving Data: File " + filename + " doesn't exist\n").c_str());
         return;
     }
-    std::vector<double> single;
-    while (!f.eof())
-    {
-        single.clear();
-        single.resize(4);
+    line_count = std::count(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>(), '\n') + 1;
+    file.seekg(0, std::ios::beg);
+    values.resize(4);
+    double temp;
+    for (int i = 0; i < 4; i++)
+        values[i].resize(line_count);
+
+    for (int j = 0; j < line_count; j++)
         for (int i = 0; i < 4; i++)
-            f >> single[i];
-        values.push_back(single);
-    }
-    f.close();
+            file >> values[i][j];
+        
+    file.close();
     return;
 }
 
@@ -85,6 +87,6 @@ double Interpolation(double x, const std::vector<double>& xValues, const std::ve
             return y0 * L0 + y1 * L1 + y2 * L2 + y3 * L3;
         }
     }
-    throw std::exception("Interpolation: x is out of range\n");
+    std::cout << "Bounds\n";
     return 0.0;
 }

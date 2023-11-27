@@ -1,7 +1,7 @@
 #pragma once
 #include <map>
 
-void RetriveData(std::vector<std::vector<double>>& values, std::string filename);
+void RetriveData(std::vector<std::vector<double>>& values, int& line_count, std::string filename);
 
 double f(std::map <char, double>& values, double x);
 
