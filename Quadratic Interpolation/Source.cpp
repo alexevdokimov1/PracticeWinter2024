@@ -2,6 +2,7 @@
 #include <vector>
 #include <iostream>
 #include <fstream>
+#include <algorithm> 
 #include "Header.h"
 
 
@@ -19,7 +20,6 @@ void RetriveData(std::vector<std::vector<double>>& values, int& line_count, std:
     line_count = std::count(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>(), '\n') + 1;
     file.seekg(0, std::ios::beg);
     values.resize(4);
-    double temp;
     for (int i = 0; i < 4; i++)
         values[i].resize(line_count);
 
@@ -63,30 +63,91 @@ double calcEquation(double a, double b, double c, double x0_param, double y0_par
     return (left + right) / 2;
 }
 
-//Interpolation
-double Interpolation(double x, const std::vector<double>& xValues, const std::vector<double>& yValues) {
-    int n = xValues.size();
+void SwapToMax(std::vector<std::vector<double>>& matrix, std::vector<double>& b, int k, const int& n)
+{
+    int max_index = k;
+    for (int i = k + 1; i < n; i++)
+        if (std::abs(matrix[i][k]) > std::abs(matrix[max_index][k])) max_index = i;
 
-    for (int i = 0; i <= n - 4; i++) {
-        if (x >= xValues[i+1] && x <= xValues[i + 2]) {
-            double x0 = xValues[i];
-            double x1 = xValues[i + 1];
-            double x2 = xValues[i + 2];
-            double x3 = xValues[i + 3];
+    std::swap(matrix[k], matrix[max_index]);
+    std::swap(b[k], b[max_index]);
+}
 
-            double y0 = yValues[i];
-            double y1 = yValues[i + 1];
-            double y2 = yValues[i + 2];
-            double y3 = yValues[i + 3];
+std::vector<double> Gaus(std::vector<std::vector<double>> matrix, std::vector<double> b, const int n)
+{
+    double a_first;
+    for (int k = 0; k < n; k++)
+    {
+        //обмен местами строк
+        SwapToMax(matrix, b, k, n);
 
-            double L0 = (x - x1) * (x - x2) * (x - x3) / ((x0 - x1) * (x0 - x2) * (x0 - x3));
-            double L1 = (x - x0) * (x - x2) * (x - x3) / ((x1 - x0) * (x1 - x2) * (x1 - x3));
-            double L2 = (x - x0) * (x - x1) * (x - x3) / ((x2 - x0) * (x2 - x1) * (x2 - x3));
-            double L3 = (x - x0) * (x - x1) * (x - x2) / ((x3 - x0) * (x3 - x1) * (x3 - x2));
+        //деление строки
+        b[k] /= matrix[k][k];
+        for (int i = n - 1; i >= 0; i--)
+            matrix[k][i] /= matrix[k][k];
 
-            return y0 * L0 + y1 * L1 + y2 * L2 + y3 * L3;
+        //вычитание из каждой строки поделенной строки
+        for (int i = k + 1; i < n; i++) {
+            a_first = matrix[i][k];
+            b[i] = b[i] - b[k] * a_first;
+            for (int j = k; j < n; j++)
+                matrix[i][j] = matrix[i][j] - matrix[k][j] * a_first;
         }
     }
-    std::cout << "Bounds\n";
-    return 0.0;
+    std::vector<double> x(n);
+    x[n - 1] = b[n - 1] / matrix[n - 1][n - 1];
+
+    double s;
+
+    for (int i = n - 2; i >= 0; i--)
+    {
+        s = 0;
+        for (int j = i + 1; j < n; j++)
+            s += matrix[i][j] * x[j];
+        x[i] = b[i] - s;
+    }
+    return x;
+}
+
+std::vector <double> Aproximate(const std::vector<double>& x, const std::vector<double>& y) {
+    std::vector<double> x_coef(5, 0);
+    std::vector<double> y_coef(3, 0);
+
+    for (int k = 0; k < 5; k++)
+        for (int i = 0; i < x.size(); i++)
+            x_coef[k] += pow(x[i], k);
+
+    for (int k = 0; k <= 2; k++)
+        for (int i = 0; i < x.size(); i++)
+            y_coef[k] += y[i] * pow(x[i], k);
+
+    const int n = 3;
+
+    std::vector<std::vector<double>> matrix(n, std::vector<double>(n));
+
+    for (int i = 0; i < n; i++)
+        matrix[i][n - i - 1] = x_coef[2];
+
+    for (int i = 0; i < n - 1; i++)
+        matrix[i][n - i - 2] = x_coef[1];
+
+    for (int i = 0; i < n - 2; i++)
+        matrix[i][n - i - 3] = x_coef[0];
+
+    for (int i = n - 1; i > 0; i--)
+        matrix[i][n - i] = x_coef[3];
+
+    for (int i = n - 1; i > 1; i--)
+        matrix[i][n - i + 1] = x_coef[4];
+
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++)
+            std::cout << matrix[i][j] << "\t";
+        std::cout << "\n";
+    }
+
+    std::vector<double> x_sol = Gaus(matrix, y_coef, n);
+
+    std::reverse(x_sol.begin(), x_sol.end());
+    return x_sol;
 }

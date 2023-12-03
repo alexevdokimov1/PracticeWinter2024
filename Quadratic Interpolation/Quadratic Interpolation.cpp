@@ -1,8 +1,8 @@
 ﻿#include <iostream>
 #include <vector>
 #include <cstdlib>
-#include <exception>  
-#include <iomanip>
+#include <exception> 
+#include <cmath> 
 #include "Header.h"
 
 int main() {
@@ -20,17 +20,23 @@ int main() {
         return 0;
     }
 
-    double time, x_inter, y_inter, z_inter;
-    for (int i = 2; i < experimental_values_count-2; i++) //не трогаем 0-2 и n-2-n точки
-    {
-        time = experimental_values[0][i];
-        x_inter = Interpolation(time, experimental_values[0], calculated_values[1]);
-        y_inter = Interpolation(x_inter, calculated_values[1], calculated_values[2]);
-        z_inter = Interpolation(x_inter, calculated_values[1], calculated_values[3]);
-        std::cout << time << std::setw(20) << x_inter << std::setw(20) << y_inter << std::setw(20) << z_inter << "\n";
+    std::vector<double> x = { 0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9 };
+    std::vector<double> y = { 0.21, 0.23, 0.31, 0.29, 0.42, 0.35,0.58,0.61, 0.59, 0.66 };
 
-        
+    std::vector<double> x_sol = Aproximate(x, y);
+
+    for (int i = 0; i < 3; i++) {
+        switch (i) {
+        case 0: std::cout << "a: ";
+        break;
+        case 1: std::cout << "b: ";
+        break;
+        case 2: std::cout << "c: ";
+        break;
+        }
+        std::cout << x_sol[i] << "\n";
     }
+    std::cout << "\n";
 
     system("pause");
 
