@@ -1,8 +1,9 @@
 #include <iostream>
 #include <vector>
-#include <cstdlib>
+#include <cstdlib> 
 #include <cmath> 
 #include <algorithm>
+#include <fstream>
 
 void PrintMatrix(std::vector<std::vector<double>>& matrix, const int& n) {
     for (int i = 0; i < n; i++) {
@@ -60,9 +61,19 @@ std::vector<double> Gaus(std::vector<std::vector<double>> matrix, std::vector<do
 
 
 int main() {
-        
-    std::vector<double> x = { 0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9 };
-    std::vector<double> y = { 0.21, 0.23, 0.31, 0.29, 0.42, 0.35,0.58,0.61, 0.59, 0.66 };
+
+    std::ifstream file("vector.txt");
+    int count;
+    file >> count;
+
+    //std::vector<double> x = { 0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9 };
+    //std::vector<double> y = { 0.21, 0.23, 0.31, 0.29, 0.42, 0.35,0.58,0.61, 0.59, 0.66 };
+
+    std::vector<double> x(count);
+    std::vector<double> y(count);
+
+    for(int i =0; i<count; i++)
+        file >> x[i] >> y[i];
 
     std::vector<double> x_coef(5,0);
     std::vector<double> y_coef(3, 0);
@@ -99,8 +110,8 @@ int main() {
         matrix[i][n-i+1] = x_coef[4];
 
     //вывод матрицы
-    PrintMatrix(matrix, n);
-
+    //PrintMatrix(matrix, n);
+    
     std::vector<double> x_sol = Gaus(matrix, y_coef, n);
 
     std::reverse(x_sol.begin(), x_sol.end());
@@ -116,7 +127,6 @@ int main() {
         }
         std::cout << x_sol[i] << "\n";
     }
-    std::cout << "\n";
 
     system("pause");
 }
