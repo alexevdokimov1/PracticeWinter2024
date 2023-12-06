@@ -1,6 +1,6 @@
 from math import *
 
-task = input("Enter function\n")
+task = input("Enter the function like a*x**2+b*x+c\n")
 
 f = lambda x: float(eval(task))
 

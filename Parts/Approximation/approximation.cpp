@@ -5,7 +5,9 @@
 #include <algorithm>
 #include <fstream>
 
-void PrintMatrix(std::vector<std::vector<double>>& matrix, const int& n) {
+typedef std::vector<double> dVect;
+
+void PrintMatrix(std::vector<dVect>& matrix, const int& n) {
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < n; j++)
             std::cout << matrix[i][j] << "\t";
@@ -13,7 +15,7 @@ void PrintMatrix(std::vector<std::vector<double>>& matrix, const int& n) {
     }
 }
 
-void SwapToMaxElement(std::vector<std::vector<double>>& matrix, std::vector<double>& b, int k, const int& n) {
+void SwapToMaxElement(std::vector<dVect>& matrix, std::vector<double>& b, int k, const int& n) {
     int max_index = k;
     for (int i = k + 1; i < n; i++)
         if (std::abs(matrix[i][k]) > std::abs(matrix[max_index][k])) max_index = i;
@@ -23,7 +25,7 @@ void SwapToMaxElement(std::vector<std::vector<double>>& matrix, std::vector<doub
 }
 
 //нахождение корней матрицы матодом Гаусса
-std::vector<double> Gaus(std::vector<std::vector<double>> matrix, std::vector<double> b, const int n) {
+std::vector<double> Gaus(std::vector<dVect> matrix, std::vector<double> b, const int n) {
     double a_first;
     for (int k = 0; k < n; k++)
     {
@@ -59,74 +61,56 @@ std::vector<double> Gaus(std::vector<std::vector<double>> matrix, std::vector<do
     return x;
 }
 
-
 int main() {
+
+    std::cout << "Enter approximation order:\n";
+    int n;
+    std::cin >> n;
 
     std::ifstream file("vector.txt");
     int count;
     file >> count;
 
-    //std::vector<double> x = { 0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9 };
-    //std::vector<double> y = { 0.21, 0.23, 0.31, 0.29, 0.42, 0.35,0.58,0.61, 0.59, 0.66 };
-
     std::vector<double> x(count);
     std::vector<double> y(count);
 
-    for(int i =0; i<count; i++)
+    /*
+        std::vector<double> x = { 0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9 };
+        std::vector<double> y = { 0.21, 0.23, 0.31, 0.29, 0.42, 0.35,0.58,0.61, 0.59, 0.66 };
+    */
+
+    for (int i = 0; i < count; i++)
         file >> x[i] >> y[i];
 
-    std::vector<double> x_coef(5,0);
-    std::vector<double> y_coef(3, 0);
+    std::vector<double> x_coef(2 * n - 1, 0);
+    std::vector<double> y_coef(n, 0);
 
-    for (int k = 0; k < 5; k++)
+    for (int k = 0; k < 2 * n - 1; k++)
         for (int i = 0; i < x.size(); i++)
             x_coef[k] += pow(x[i], k);
 
-    for (int k = 0; k <= 2; k++)
+    for (int k = 0; k < n; k++)
         for (int i = 0; i < x.size(); i++)
-            y_coef[k] += y[i]*pow(x[i], k);
+            y_coef[k] += y[i] * pow(x[i], k);
 
     //создание матрицы
-    int n = 3;
+    std::vector<dVect> matrix(n, dVect(n));
 
-    std::vector<std::vector<double>> matrix(n, std::vector<double>(n));
+    //вывод матрицы//
+    for (int k = 1; k < 2 * n; k++)
+        for (int i = 0; i < k; i++)
+            if (i < n && k - i - 1 < n)
+                matrix[i][k - i - 1] = x_coef[k - 1];
 
-    //выставление элементов на главную диагональ
-    for (int i = 0; i < n; i++)
-        matrix[i][n - i - 1] = x_coef[2];
-    //выставление элементов на главную диагональ+1
-    for (int i = 0; i < n-1; i++)
-        matrix[i][n - i - 2] = x_coef[1];
-    //выставление элементов на главную диагональ+2
-    for (int i = 0; i < n - 2; i++)
-        matrix[i][n - i - 3] = x_coef[0];
-    
-    //выставление элементов на главную диагональ-1
-    for (int i = n-1; i > 0; i--)
-        matrix[i][n - i] = x_coef[3];
-
-    //выставление элементов на главную диагональ-2
-    for (int i = n - 1; i > 1; i--)
-        matrix[i][n-i+1] = x_coef[4];
-
-    //вывод матрицы
     //PrintMatrix(matrix, n);
-    
-    std::vector<double> x_sol = Gaus(matrix, y_coef, n);
+
+    dVect x_sol = Gaus(matrix, y_coef, n);
 
     std::reverse(x_sol.begin(), x_sol.end());
 
-    for (int i = 0; i < n; i++) {
-        switch (i) {
-        case 0: std::cout << "a: ";
-        break;
-        case 1: std::cout << "b: ";
-        break;
-        case 2: std::cout << "c: ";
-        break;
-        }
-        std::cout << x_sol[i] << "\n";
-    }
+    for (int i = 0; i < x_sol.size(); i++)
+        std::cout << (char)(97 + i) << " = " << x_sol[i] << "\n";
 
     system("pause");
+    return 0;
 }
