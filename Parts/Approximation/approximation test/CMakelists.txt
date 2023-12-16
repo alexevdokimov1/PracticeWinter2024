@@ -1,0 +1,13 @@
+cmake_minimum_required(VERSION 3.28 FATAL_ERROR)
+
+set(CMAKE_CXX_STANDARD 17)
+
+project(Approximation LANGUAGES CXX)
+
+add_executable(Approximation approximation.cpp)
+
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/vector.txt
+     DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/vector.txt
+    ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)

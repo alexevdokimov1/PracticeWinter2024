@@ -129,11 +129,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Quadratic Interpolation.cpp" />
-    <ClCompile Include="Source.cpp" />
+    <ClCompile Include="src/Approximation.cpp" />
+    <ClCompile Include="src/Data.cpp" />
+    <ClCompile Include="src/Function.cpp" />
+    <ClCompile Include="src/Gaus.cpp" />
+    <ClCompile Include="src/Quadratic Interpolation.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Header.h" />
+    <ClInclude Include="src/Approximation.h" />
+    <ClInclude Include="src/Data.h" />
+    <ClInclude Include="src/Function.h" />
+    <ClInclude Include="src/Gaus.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
