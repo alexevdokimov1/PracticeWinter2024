@@ -1,22 +1,30 @@
 from math import *
-def main():
-    task = input("Enter the function like a*x**2+b*x+c\n")
 
-    f = lambda x: float(eval(task))
+def f(coefs, x):
+    summ=0
+    for i in range(len(coefs)):
+        summ+=coefs[i]*x**(len(coefs)-1-i)
+    return summ
+
+def main():
+    order = int(input("Enter order\n"))
+    count = int(input("Enter count\n"))
+    
+    coefs = [0]*order
+    for i in range(order):
+        coefs[i]=float(input(f'Enter coef {chr(97+i)}\n'))
 
     file = open("vector.txt", "w")
-
-    n = int(input("Enter n\n"))
 
     x_start = float(input("Enter x start\n"))
 
     step=float(input("Enter step\n"))
 
-    file.write(str(n)+"\n")
+    file.write(str(order) + " " + str(count)+"\n")
 
-    for i in range(n):
+    for i in range(count):
         x_cur=x_start+step*i
-        f_cur=f(x_cur)
+        f_cur=f(coefs, x_cur)
         file.write(str(x_cur)+"\t"+str(f_cur)+"\n")
 
     file.close()

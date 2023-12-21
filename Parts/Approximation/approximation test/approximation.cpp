@@ -62,12 +62,9 @@ std::vector<double> Gaus(std::vector<dVect> matrix, std::vector<double> b, const
 }
 
 int main() {
-
-    std::cout << "Enter approximation order:\n";
-    int n;
-    std::cin >> n;
-
     std::ifstream file("vector.txt");
+    int n;
+    file >> n;
     int count;
     file >> count;
 

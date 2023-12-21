@@ -29,7 +29,7 @@ double calcEquation(double a, double b, double c, double x0_param, double y0_par
     return (left + right) / 2;
 }
 
-main(){
+int main(){
 	int n;
 	double solution_count, a, b, c, x0, y0, left, right, eps = 0.01;
 	double calc;
