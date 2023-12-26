@@ -1,6 +1,5 @@
 ﻿#include <iostream>
 #include <vector>
-#include <cstdlib>
 #include <exception> 
 #include <cmath>
 #include <fstream> 
@@ -34,8 +33,9 @@ int main() {
         return 0;
     }
 
-    for (int k = 1; k < experimental_values_count-1; k++) {
-        for (int i = 0; i < calculated_values_count - 3; i++) {
+    int i_start = 0;
+    for (int k = 0; k < experimental_values_count; k++) { //except first and last to set interval
+        for (int i = i_start; i < calculated_values_count - 3; i++) {
 
             if (calculated_values[0][i+1] < experimental_values[0][k] && experimental_values[0][k] < calculated_values[0][i + 2]) {
 
@@ -48,13 +48,14 @@ int main() {
                 y_sol = Aproximate(x_slice, y_slice, 3); //aproximation of y to x
                 z_sol = Aproximate(x_slice, z_slice, 3); //aproximation of z to x
                
-                x_closest =  calcEquation(x_sol[0], x_sol[1], x_sol[2], experimental_values[0][k], experimental_values[1][k], experimental_values[1][k-1], experimental_values[1][k+1], 0.001);
+                x_closest =  calcEquation(x_sol[0], x_sol[1], x_sol[2], experimental_values[0][k], experimental_values[1][k], 
+                    calculated_values[1][i+1], calculated_values[1][i + 2], 0.001); //finding x closest
                
-                y_closest = 0;
+                y_closest = 0; //finding y based on x xlosest
                 for (int v = 0; v < y_sol.size(); v++)
                     y_closest += y_sol[v] * pow(x_closest, 2 - v);
 
-                z_closest = 0;
+                z_closest = 0; //finding z based on x xlosest
                 for (int v = 0; v < z_sol.size(); v++)
                     z_closest += z_sol[v] * pow(x_closest, 2 - v);
 
@@ -62,20 +63,16 @@ int main() {
                 y_del = std::abs(y_closest - experimental_values[2][k]);
                 z_del = std::abs(z_closest - experimental_values[3][k]);
 
-                
-
                 output << experimental_values[0][k] << "\t" << x_del << "\t" << y_del << "\t" << z_del << "\n";
 
+                if(i>4)i_start = i - 4;
+
                 break;
-                
-            }
-               
+            }      
         }
     }
 
     output.close();
-    
-    system("pause");
 
     return 0;
 }
